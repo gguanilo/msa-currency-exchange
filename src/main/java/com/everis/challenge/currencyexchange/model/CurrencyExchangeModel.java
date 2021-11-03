@@ -13,20 +13,21 @@ import lombok.*;
         + "ID, "
         + "BUY, "
         + "SELL, "
-        + "DATE_PROCESS FROM currency_exchange_model",
+        + "DATE_PROCESS FROM currency_exchange",
     resultClass = CurrencyExchangeModel.class)
 @NamedNativeQuery(name = "CurrencyExchangeModel.findProfile",
     query = "SELECT 0 as ID,SELL,BUY,NULL AS DATE_PROCESS FROM (" +
-        "SELECT max(SELL) AS SELL ,max(BUY) AS BUY ,'HIGH' AS PROFILE FROM currency_exchange_model " +
+        "SELECT max(SELL) AS SELL ,max(BUY) AS BUY ,'HIGH' AS PROFILE FROM currency_exchange " +
         "WHERE DATE_PROCESS = :date \n" +
         "UNION ALL \n" +
-        "SELECT (SUM(SELL) / COUNT(1)) AS SELL ,(SUM(BUY) / COUNT(1)) AS BUY , 'MEDIUM'  AS PROFILE FROM currency_exchange_model " +
+        "SELECT (SUM(SELL) / COUNT(1)) AS SELL ,(SUM(BUY) / COUNT(1)) AS BUY , 'MEDIUM'  AS PROFILE FROM currency_exchange " +
         "WHERE DATE_PROCESS = :date \n" +
         "UNION ALL \n" +
-        "SELECT min(SELL) AS SELL ,min(BUY) AS BUY ,'LOW' AS PROFILE FROM currency_exchange_model " +
-        "WHERE DATE_PROCESS = :date ) " +
+        "SELECT min(SELL) AS SELL ,min(BUY) AS BUY ,'LOW' AS PROFILE FROM currency_exchange " +
+        "WHERE DATE_PROCESS = :date ) AS subquery_data " +
         "WHERE PROFILE =:profile",
     resultClass = CurrencyExchangeModel.class)
+@Table (name = "currency_exchange", schema = "currsysdb")
 public class CurrencyExchangeModel {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
